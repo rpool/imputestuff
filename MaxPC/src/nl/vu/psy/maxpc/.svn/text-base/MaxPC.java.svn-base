@@ -1,0 +1,256 @@
+package nl.vu.psy.maxpc;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
+import joptsimple.OptionException;
+import joptsimple.OptionSet;
+
+public class MaxPC {
+	public enum PropertyKeys {
+		THREADCOUNT("thread_count", "2"), MAINSLEEPTIME("main_sleep_time", "10000"), MAININITIALCAPACITY("main_initial_capacity", "150000"), THREADINITIALCAPACITY("thread_initial_capacity", "75000");
+		private String key;
+		private String defaultValue;
+
+		private PropertyKeys(String key, String defaultValue) {
+			this.key = key;
+			this.defaultValue = defaultValue;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public String getDefaultValue() {
+			return defaultValue;
+		}
+	}
+
+	private static MaxAPCOptionParser optionParser;
+	private static ExecutorService threadPool;
+	private static Properties props;
+	public static final String PROPERTY_FILE = "maxpc.properties";
+	private static int c = 1; // For progress ticker
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		threadPool = Executors.newCachedThreadPool();
+		optionParser = new MaxAPCOptionParser();
+		long tStart = System.currentTimeMillis();
+		System.out.println("------------------------------------------------------------------------------");
+		System.out.println("                              MaxPC");
+		System.out.println("");
+		System.out.println("           Version 1.01 - Vrije Universiteit Amsterdam - 19/10/2010");
+		System.out.println("           Questions, problems, remarks: vm.kattenberg@psy.vu.nl");
+		System.out.println("------------------------------------------------------------------------------");
+		System.out.println("");
+		OptionSet optionsInEffect = null;
+		props = new Properties();
+		try {
+			props.load(new FileInputStream(new File(MaxPC.PROPERTY_FILE)));
+		} catch (Exception e) {
+			System.out.println("The properties file could not be read. Assuming defaults.");
+		}
+		try {
+			optionsInEffect = optionParser.parse(args);
+			if (args.length < 4 || args.length > 6 || optionsInEffect.has(optionParser.help)) {
+				showUsage(optionParser);
+			} else {
+				if (optionsInEffect.has(optionParser.genFile) && optionsInEffect.has(optionParser.sampleFile)) {
+					// Parse sample file for individual count and id's
+					ArrayList<String> individualIds = new ArrayList<String>();
+					System.out.println("Reading .sample file for individual identifiers...");
+					Scanner sampleScanner = new Scanner(new BufferedReader(new FileReader(optionsInEffect.valueOf(optionParser.sampleFile))));
+					sampleScanner.useDelimiter("\n");
+					int index;
+					// First two lines should be headers and column description, skip these
+					for (index = 0; index < 2 && sampleScanner.hasNext(); index++) {
+						sampleScanner.next();
+					}
+					if (sampleScanner.hasNext() && index == 2) {
+						while (sampleScanner.hasNext()) {
+							StringTokenizer st = new StringTokenizer(sampleScanner.next(), " ");
+							if (st.countTokens() == 5) {
+								// Individual id is second token:
+								individualIds.add(st.nextToken());
+							} else {
+								showErrorAndExit(optionParser, new IOException("There seems to be something wrong with the .sample file (data rows)."));
+							}
+						}
+					} else {
+						showErrorAndExit(optionParser, new IOException("There seems to be something wrong with the .sample file (headers)."));
+					}
+					System.out.println("[" + individualIds.size() + "] individuals where found.");
+					System.out.println("Reading .gen file (this may take a while)...");
+					SynchronizedLineReader slr = new SynchronizedLineReader(optionsInEffect.valueOf(optionParser.genFile));
+					ArrayList<FutureTask<LineParser>> threads = new ArrayList<FutureTask<LineParser>>();
+					//int threadCount = Integer.parseInt(props.getProperty(PropertyKeys.THREADCOUNT.getKey(), PropertyKeys.THREADCOUNT.getDefaultValue()));
+					int threadCount = 1;
+					for (int i = 0; i < threadCount; i++) {
+						FutureTask<LineParser> ft = new FutureTask<LineParser>(new LineParser(slr, props));
+						threadPool.execute(ft);
+						threads.add(ft);
+					}
+					boolean done = false;
+					long sleepTime = Long.parseLong(props.getProperty(PropertyKeys.MAINSLEEPTIME.getKey(), PropertyKeys.MAINSLEEPTIME.getDefaultValue()));
+					while (!done) {
+						Thread.sleep(sleepTime);
+						boolean newDone = true;
+						for (FutureTask<LineParser> ft : threads) {
+							newDone = (newDone && ft.isDone());
+						}
+						done = newDone;
+						System.out.print(tic() + " " + slr.getLineCount() + "\r");
+					}
+					System.out.print("\n");
+					System.out.println("Done processing .gen file!");
+					int initialCapacity = Integer.parseInt(props.getProperty(PropertyKeys.MAININITIALCAPACITY.getKey(), PropertyKeys.MAININITIALCAPACITY.getDefaultValue()));
+					PriorityQueue<SnpScore> snpScores = new PriorityQueue<SnpScore>(initialCapacity, new SnpComparator());
+					ArrayList<Double> individualAvgs = new ArrayList<Double>();
+					ArrayList<Double> individualSds = new ArrayList<Double>();
+					for (FutureTask<LineParser> ft : threads) {
+						snpScores.addAll(ft.get().getSnpScores());
+						index = 0;
+						for (Double d : ft.get().getIndividualAverages()) {
+							if (individualAvgs.size() == index) {
+								individualAvgs.add(index, d);
+							} else {
+								double temp = individualAvgs.get(index);
+								individualAvgs.set(index, (temp + d));
+							}
+							index++;
+						}
+						index = 0;
+						for (Double d : ft.get().getIndividualSds()) {
+							if (individualSds.size() == index) {
+								individualSds.add(index, d);
+							} else {
+								double temp = individualSds.get(index);
+								individualSds.set(index, (temp + d));
+							}
+							index++;
+						}
+					}
+					index = 0;
+					String outPrefix = "maxapc";
+					if (optionsInEffect.has(optionParser.outPrefix)) {
+						outPrefix = optionsInEffect.valueOf(optionParser.outPrefix);
+					}
+					System.out.println("Outputting individual scores...");
+					BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outPrefix + ".pi")));
+					bw.write("subject_id ampc sd_ampc\n");
+					for (Double d : individualAvgs) {
+						double sdapc = individualSds.get(index);
+						double dd = (sdapc - (Math.pow(d, 2)/snpScores.size())) / (snpScores.size() - 1);
+						sdapc = Math.sqrt(dd);
+						individualSds.set(index, sdapc);
+						individualAvgs.set(index, (d / snpScores.size()));
+						
+						bw.write(individualIds.get(index) + " " + individualAvgs.get(index) + " " + individualSds.get(index) + "\n");
+						index++;
+					}
+					bw.flush();
+					bw.close();
+
+					System.out.println("Outputting snpscores...");
+					bw = new BufferedWriter(new FileWriter(new File(outPrefix + ".ps")));
+					bw.write("rs_id position ampc sd_ampc \n");
+					SnpScore s = snpScores.poll();
+					while(s != null) {
+					//for (SnpScore s : snpScores.p) {
+						bw.write(s.toString() + "\n");
+						s = snpScores.poll();
+					}
+					bw.flush();
+					bw.close();
+					props.store(new FileOutputStream(new File("maxapc.properties")), "MaxPC properties file.");
+					threadPool.shutdown();
+				} else {
+					showUsage(optionParser);
+				}
+			}
+		} catch (OptionException e) {
+			showErrorAndExit(optionParser, e);
+		} catch (FileNotFoundException e) {
+			showErrorAndExit(optionParser, e);
+		} catch (IOException e) {
+			showErrorAndExit(optionParser, e);
+		} catch (InterruptedException e) {
+			showErrorAndExit(optionParser, e);
+		} catch (ExecutionException e) {
+			showErrorAndExit(optionParser, e);
+		}
+		System.out.println("");
+		System.out.println("------------------------------------------------------------------------------");
+		System.out.print("                     Finished!");
+		System.out.print(" Elapsed time: " + (System.currentTimeMillis() - tStart) + "ms");
+		System.out.print("\n");
+		System.out.println("------------------------------------------------------------------------------");
+	}
+
+	private static void showErrorAndExit(MaxAPCOptionParser optionParser, Exception e) {
+		System.out.println("Something didn't quite work like expected: [" + e.getMessage() + "]");
+		showUsage(optionParser);
+		System.exit(1);
+	}
+
+	private static void showUsage(MaxAPCOptionParser optionParser) {
+		System.out.println("");
+		System.out.println("Usage:");
+		System.out.println("MaxAPC takes as input IMPUTE/SNPTEST .gen and .sample files. On the basis");
+		System.out.println("of these two files two statistics are calculated and provided in the two");
+		System.out.println("outputfiles:");
+		System.out.println("1.) the maximum, average, posterior call averaged per individual (one average");
+		System.out.println("    per individual) - .pi file.");
+		System.out.println("2.) the maximum, average, posterior call averaged per");
+		System.out.println("    SNP (one average per SNP) - .ps file.");
+		System.out.println("Very limited validation of the input files takes place: garbage in, garbage out.");
+		System.out.println("");
+		System.out.println("Command line options:");
+		try {
+			optionParser.printHelpOn(System.out);
+		} catch (IOException e) {
+			// Should never happen in this case. I wonder how the sysout below
+			// would fare..
+			System.out.println("Yikes, could not print to System.out");
+			e.printStackTrace();
+		}
+	}
+	
+	private static String tic() {
+		StringBuffer result = new StringBuffer();
+
+		if (c == 1) {
+			result.append("|");
+			c++;
+		} else if (c == 2) {
+			result.append("/");
+			c++;
+		} else if (c == 3) {
+			result.append("-");
+			c++;
+		} else if (c == 4) {
+			result.append("\\");
+			c = 1;
+		}
+		return result.toString();
+	}
+}

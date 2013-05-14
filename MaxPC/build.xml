@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<project name="maxpc" default="JarIt" basedir=".">
+	<target name="JarIt">
+		<path id="dist.classpath">
+			<fileset dir="${basedir}/lib" includes="**/*.jar, **/*.zip" />
+		</path>
+		<manifestclasspath property="dist.manifest.classpath" jarfile="${basedir}/maxpc.jar">
+			<classpath refid="dist.classpath" />
+		</manifestclasspath>
+		 
+		<jar destfile="${basedir}/maxpc.jar" compress="true">
+			<fileset dir="${basedir}/bin" includes="**/*.*" />
+			<manifest>
+				<attribute name="Main-Class" value="nl.vu.psy.maxpc.MaxPC" />
+				<attribute name="Class-Path" value="${dist.manifest.classpath}"/>   
+			</manifest>
+		</jar>
+
+	</target>
+</project>

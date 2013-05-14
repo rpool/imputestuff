@@ -1,0 +1,180 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXFileReference section */
+		0413493311577A7400AA04A7 /* impute.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = impute.sh; sourceTree = "<group>"; };
+		0413493611577AAA00AA04A7 /* mygtool */ = {isa = PBXFileReference; lastKnownFileType = file; path = mygtool; sourceTree = "<group>"; };
+		0413493711577AAA00AA04A7 /* myimpute */ = {isa = PBXFileReference; lastKnownFileType = file; path = myimpute; sourceTree = "<group>"; };
+		0413493811577AAA00AA04A7 /* myplink */ = {isa = PBXFileReference; lastKnownFileType = file; path = myplink; sourceTree = "<group>"; };
+		0413493911577AAA00AA04A7 /* impute_job */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = impute_job; sourceTree = "<group>"; };
+		04134F0B11577AAD00AA04A7 /* run.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = run.sh; sourceTree = "<group>"; };
+		04134F0C11577AAD00AA04A7 /* runimputation.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = runimputation.sh; sourceTree = "<group>"; };
+		04134F0D11577AAD00AA04A7 /* runimpute.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = runimpute.sh; sourceTree = "<group>"; };
+		04134F0E11577AAD00AA04A7 /* spawn.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = spawn.sh; sourceTree = "<group>"; };
+		04134F0F11577AAD00AA04A7 /* submit.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = submit.sh; sourceTree = "<group>"; };
+		04134F271157885700AA04A7 /* impute.parameters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = impute.parameters; sourceTree = "<group>"; };
+		04915BF411819065001D9F42 /* processoutput.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = processoutput.sh; sourceTree = "<group>"; };
+		04915BF511819070001D9F42 /* catgenfiles.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = catgenfiles.sh; sourceTree = "<group>"; };
+		04915C0A11819169001D9F42 /* makedirs.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makedirs.sh; sourceTree = "<group>"; };
+		04915C0E118191D1001D9F42 /* makedirs.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makedirs.sh; sourceTree = "<group>"; };
+		04915C0F118191DC001D9F42 /* makedirs.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = makedirs.sh; sourceTree = "<group>"; };
+		04915C12118192DA001D9F42 /* splitandalign.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = splitandalign.sh; sourceTree = "<group>"; };
+		049CF00E11D6140D00CA22FA /* extractmapupdate.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = extractmapupdate.sh; sourceTree = "<group>"; };
+		049CF00F11D6140D00CA22FA /* renamehaps.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = renamehaps.sh; sourceTree = "<group>"; };
+		049CF01011D6140D00CA22FA /* renamelegends.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = renamelegends.sh; sourceTree = "<group>"; };
+		049CF01111D6140D00CA22FA /* renamemaps.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = renamemaps.sh; sourceTree = "<group>"; };
+		04C2E3E5118194C300B0BFD2 /* catlogfiles.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = catlogfiles.sh; sourceTree = "<group>"; };
+		04C2E40911819E1F00B0BFD2 /* catimputedfiles.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = catimputedfiles.sh; sourceTree = "<group>"; };
+		04C2E40A11819E1F00B0BFD2 /* imputedstatus.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = imputedstatus.sh; sourceTree = "<group>"; };
+		04C2E40B11819E1F00B0BFD2 /* snpcount.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = snpcount.sh; sourceTree = "<group>"; };
+		04C2E40C11819E1F00B0BFD2 /* snpcount2.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = snpcount2.sh; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0413493411577AAA00AA04A7 /* impute */ = {
+			isa = PBXGroup;
+			children = (
+				0413493511577AAA00AA04A7 /* bin */,
+				0413493911577AAA00AA04A7 /* impute_job */,
+				0413493A11577AAA00AA04A7 /* input */,
+				041349AA11577AAB00AA04A7 /* output */,
+				04134E9C11577AAD00AA04A7 /* reference */,
+				04134F0B11577AAD00AA04A7 /* run.sh */,
+				04134F0C11577AAD00AA04A7 /* runimputation.sh */,
+				04134F0D11577AAD00AA04A7 /* runimpute.sh */,
+				04134F0E11577AAD00AA04A7 /* spawn.sh */,
+				04134F0F11577AAD00AA04A7 /* submit.sh */,
+				04134F271157885700AA04A7 /* impute.parameters */,
+			);
+			path = impute;
+			sourceTree = "<group>";
+		};
+		0413493511577AAA00AA04A7 /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				0413493611577AAA00AA04A7 /* mygtool */,
+				0413493711577AAA00AA04A7 /* myimpute */,
+				0413493811577AAA00AA04A7 /* myplink */,
+			);
+			path = bin;
+			sourceTree = "<group>";
+		};
+		0413493A11577AAA00AA04A7 /* input */ = {
+			isa = PBXGroup;
+			children = (
+				04915C12118192DA001D9F42 /* splitandalign.sh */,
+				04915C0A11819169001D9F42 /* makedirs.sh */,
+			);
+			path = input;
+			sourceTree = "<group>";
+		};
+		041349AA11577AAB00AA04A7 /* output */ = {
+			isa = PBXGroup;
+			children = (
+				04C2E40811819E1F00B0BFD2 /* out */,
+				04915C0E118191D1001D9F42 /* makedirs.sh */,
+				04915BF511819070001D9F42 /* catgenfiles.sh */,
+				04915BF411819065001D9F42 /* processoutput.sh */,
+				04C2E3E5118194C300B0BFD2 /* catlogfiles.sh */,
+			);
+			path = output;
+			sourceTree = "<group>";
+		};
+		04134E9C11577AAD00AA04A7 /* reference */ = {
+			isa = PBXGroup;
+			children = (
+				049CF00E11D6140D00CA22FA /* extractmapupdate.sh */,
+				049CF00F11D6140D00CA22FA /* renamehaps.sh */,
+				049CF01011D6140D00CA22FA /* renamelegends.sh */,
+				049CF01111D6140D00CA22FA /* renamemaps.sh */,
+				04915C0F118191DC001D9F42 /* makedirs.sh */,
+			);
+			path = reference;
+			sourceTree = "<group>";
+		};
+		04134F151157824D00AA04A7 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+		04C2E40811819E1F00B0BFD2 /* out */ = {
+			isa = PBXGroup;
+			children = (
+				04C2E40911819E1F00B0BFD2 /* catimputedfiles.sh */,
+				04C2E40A11819E1F00B0BFD2 /* imputedstatus.sh */,
+				04C2E40B11819E1F00B0BFD2 /* snpcount.sh */,
+				04C2E40C11819E1F00B0BFD2 /* snpcount2.sh */,
+			);
+			path = out;
+			sourceTree = "<group>";
+		};
+		04DDB9C31157774700DE264A = {
+			isa = PBXGroup;
+			children = (
+				04134F151157824D00AA04A7 /* utils */,
+				0413493411577AAA00AA04A7 /* impute */,
+				0413493311577A7400AA04A7 /* impute.sh */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		04DDB9C51157774700DE264A /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 04DDB9C81157774700DE264A /* Build configuration list for PBXProject "impute-framework" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 04DDB9C31157774700DE264A;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		04DDB9C61157774700DE264A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		04DDB9C71157774700DE264A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04DDB9C81157774700DE264A /* Build configuration list for PBXProject "impute-framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04DDB9C61157774700DE264A /* Debug */,
+				04DDB9C71157774700DE264A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 04DDB9C51157774700DE264A /* Project object */;
+}

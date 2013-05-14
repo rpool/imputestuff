@@ -1,0 +1,50 @@
+#PBS -lwalltime=120:00:00  
+#PBS -S /bin/bash
+#
+# Part of the VU imputation script pack
+#
+# Qsub submission script for running impute on the lisa cluster (lisa.sara.nl)
+#
+# Environment settings (qsub is run with the -v parameter):
+# OUTDIR: the directory that will hold the output 
+# CHROMOSOME
+# SET
+# COUNTER - bin number
+# FROM
+# TO
+
+# 
+# Created by vm.kattenberg - vm.kattenberg@psy.vu.nl
+
+WORKDIR=$TMPDIR
+
+# Copy data to scratchdir
+cp -R chr"$CHROMOSOME".* $WORKDIR
+cp -R "$SET"_"$CHROMOSOME".* $WORKDIR
+cp -R *.sh $WORKDIR
+cp -R my* $WORKDIR
+cp -R impute.parameters $WORKDIR
+
+cd $WORKDIR
+chmod +x *
+
+# First recode binary plink files
+./myplink --bfile $SET"_"$CHROMOSOME" --recode --out temp
+
+# Next gtool them
+./mygtool -P --ped temp.ped --map temp.map --og input.gen --os input.sample --discrete_phenotype 0
+
+# Make a strand file!
+cut -f3 -d ' ' input.gen | sed 's/$/ +/' > input.strand
+
+# Run impute
+./runimpute.sh "$SET"_"$CHROMOSOME" $COUNTER input.gen input.strand $FROM $TO chr"$CHROMOSOME".haps chr"$CHROMOSOME".legend chr"$CHROMOSOME".genetic.map $CHROMOSOME
+
+# Copy files back
+rm temp.*
+rm chr"$CHROMOSOME".*
+rm my*
+rm *.sh
+cp -R $WORKDIR/* $OUTDIR
+cd ..
+rm -rf $WORKDIR

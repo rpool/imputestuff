@@ -1,0 +1,117 @@
+package nl.vu.psy.maxpc;
+
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.concurrent.Callable;
+
+import nl.vu.psy.maxpc.MaxPC.PropertyKeys;
+
+public class LineParser implements Callable<LineParser> {
+
+	private final SynchronizedLineReader slr;
+	private ArrayList<Double> individualAverages;
+	private ArrayList<Double> individualSds;
+	private PriorityQueue<SnpScore> snpScores;
+	private long linecount;
+
+	public LineParser(SynchronizedLineReader slr, Properties props) {
+		this.slr = slr;
+		individualAverages = new ArrayList<Double>();
+		individualSds = new ArrayList<Double>();
+		int initialCapacity = Integer.parseInt(props.getProperty(PropertyKeys.THREADINITIALCAPACITY.getKey(), PropertyKeys.THREADINITIALCAPACITY.getDefaultValue()));
+		snpScores = new PriorityQueue<SnpScore>(initialCapacity, new SnpComparator());
+		linecount = 0;
+	}
+
+	@Override
+	public LineParser call() {
+		String line = slr.getNextLine();
+		while (line != null) {
+			//System.out.println("[" + line + "]");
+			Scanner lineScanner = new Scanner(line);
+			lineScanner.useDelimiter(" ");
+
+			// RS is second column
+			lineScanner.next();
+			String rs = lineScanner.next();
+			//System.out.print(rs + " ");
+			// Pos is third column
+			long pos = Long.parseLong(lineScanner.next());
+
+			// Skip to genotype probs (starts at 6)
+			lineScanner.next();
+			lineScanner.next();
+
+			// Compute max probs
+			ArrayList<Double> maxApcs = getMaxPcs(lineScanner);
+			
+			double apc = 0;
+			double sdapc = 0;
+			int index = 0;
+			for (Double d : maxApcs) {
+				if (individualAverages.size() == index) {
+					individualAverages.add(index, d);
+				} else {
+					double temp = individualAverages.get(index);
+					individualAverages.set(index, (temp + d));
+				}
+				if (individualSds.size() == index) {
+					individualSds.add(index, Math.pow(d, 2));
+				} else {
+					double temp = individualSds.get(index);
+					individualSds.set(index, (temp + Math.pow(d, 2)));
+				}
+				apc += d;
+				sdapc += Math.pow(d, 2);
+				index++;
+			}
+			double d = (sdapc - (Math.pow(apc, 2)/maxApcs.size())) / (maxApcs.size() - 1);
+			sdapc = Math.sqrt(d);
+			apc /= maxApcs.size();
+
+			SnpScore snp = new SnpScore(rs, pos, apc, sdapc);
+			snpScores.add(snp);
+
+			line = slr.getNextLine();
+			linecount++;
+			//System.out.print("\n");
+			//if(linecount % 1000 == 0) {
+			//	System.out.print(".");
+			//}
+		}
+		return this;
+	}
+
+	private ArrayList<Double> getMaxPcs(Scanner lineScanner) {
+		ArrayList<Double> result = new ArrayList<Double>();
+		for (int index = 0; lineScanner.hasNext(); index += 3) {
+			double d1 = Double.parseDouble(lineScanner.next());
+			double d2 = Double.parseDouble(lineScanner.next());
+			double d3 = Double.parseDouble(lineScanner.next());
+			result.add((d1 > d2) ? Math.max(d1, d3) : Math.max(d2, d3));
+		//	if( d1 == d2 && d2 == d3 && d3 == 0 ) {
+		//		System.out.print("{" + index + "}");
+		//	}
+		}
+		return result;
+	}
+
+	public ArrayList<Double> getIndividualAverages() {
+		return individualAverages;
+	}
+	
+	public ArrayList<Double> getIndividualSds() {
+		return individualSds;
+	}
+
+	public PriorityQueue<SnpScore> getSnpScores() {
+		return snpScores;
+	}
+
+	public long getLinecount() {
+		return linecount;
+	}
+
+}

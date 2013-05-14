@@ -1,0 +1,94 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXFileReference section */
+		0477432D11D61566008D5F21 /* impute.parameters */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = impute.parameters; sourceTree = "<group>"; };
+		0477432E11D61566008D5F21 /* impute_job */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = impute_job; sourceTree = "<group>"; };
+		0477438611D61566008D5F21 /* runimpute.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = runimpute.sh; sourceTree = "<group>"; };
+		0477438B11D615C2008D5F21 /* start.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = start.sh; sourceTree = "<group>"; };
+		0477439B11D63753008D5F21 /* mygtool */ = {isa = PBXFileReference; lastKnownFileType = file; path = mygtool; sourceTree = "<group>"; };
+		0477439C11D63753008D5F21 /* myimpute */ = {isa = PBXFileReference; lastKnownFileType = file; path = myimpute; sourceTree = "<group>"; };
+		0477439D11D63754008D5F21 /* myplink */ = {isa = PBXFileReference; lastKnownFileType = file; path = myplink; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0477432811D61566008D5F21 /* impute */ = {
+			isa = PBXGroup;
+			children = (
+				0477439B11D63753008D5F21 /* mygtool */,
+				0477439C11D63753008D5F21 /* myimpute */,
+				0477439D11D63754008D5F21 /* myplink */,
+				0477432D11D61566008D5F21 /* impute.parameters */,
+				0477432E11D61566008D5F21 /* impute_job */,
+				0477438611D61566008D5F21 /* runimpute.sh */,
+				0477438B11D615C2008D5F21 /* start.sh */,
+			);
+			path = impute;
+			sourceTree = "<group>";
+		};
+		0477BDA611D611D200E50F71 = {
+			isa = PBXGroup;
+			children = (
+				0477432811D61566008D5F21 /* impute */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		0477BDA811D611D200E50F71 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 0477BDAB11D611D200E50F71 /* Build configuration list for PBXProject "impute-alternate" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0477BDA611D611D200E50F71;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		0477BDA911D611D200E50F71 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		0477BDAA11D611D200E50F71 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0477BDAB11D611D200E50F71 /* Build configuration list for PBXProject "impute-alternate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0477BDA911D611D200E50F71 /* Debug */,
+				0477BDAA11D611D200E50F71 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0477BDA811D611D200E50F71 /* Project object */;
+}

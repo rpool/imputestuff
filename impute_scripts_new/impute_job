@@ -1,0 +1,13 @@
+#PBS -lwalltime=36:00:00  
+#PBS -S /bin/bash
+# $CHR -> chromosome number
+# $FROM -> from pos
+# $TO -> to pos
+# $SRC -> src directory
+# $DEST -> dest directory
+
+# Move to scratch
+cd $TMPDIR
+cp -v $SRC/impute.sh .
+chmod +x impute.sh
+./impute.sh $CHR $FROM $TO $SRC $DEST &> impute.sh."$CHR"."$FROM"."$TO".log

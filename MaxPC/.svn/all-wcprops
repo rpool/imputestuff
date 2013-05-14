@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 27
+/svn/maxpc/!svn/ver/1/trunk
+END
+maxapc.properties
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/maxpc/!svn/ver/2/trunk/maxapc.properties
+END
+maxpc.jar
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/maxpc/!svn/ver/2/trunk/maxpc.jar
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/maxpc/!svn/ver/2/trunk/build.xml
+END
+maxpc
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/maxpc/!svn/ver/2/trunk/maxpc
+END
+maxpc.properties
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/maxpc/!svn/ver/2/trunk/maxpc.properties
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/maxpc/!svn/ver/2/trunk/.project
+END
+maxpc.bat
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/maxpc/!svn/ver/2/trunk/maxpc.bat
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/maxpc/!svn/ver/2/trunk/.classpath
+END
